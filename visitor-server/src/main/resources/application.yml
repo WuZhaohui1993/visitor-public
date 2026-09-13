@@ -1,0 +1,125 @@
+# 应用服务端口
+server:
+  # 后端 HTTP 监听端口
+  port: ${SERVER_PORT:8080}
+
+# Spring 基础配置
+spring:
+  # 额外导入海康独立配置文件，便于集中维护
+  config:
+    import: optional:classpath:hikvision.yml
+  # 默认启动环境
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  # Spring 应用名称
+  application:
+    name: visitor-server
+  # 数据库连接配置
+  datasource:
+    # MySQL 连接串
+    url: ${DB_URL}
+    # 数据库用户名
+    username: ${DB_USERNAME}
+    # 数据库密码
+    password: ${DB_PASSWORD}
+  # JPA 配置
+  jpa:
+    # Hibernate 相关配置
+    hibernate:
+      # 启动时自动更新表结构
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    # 关闭 OpenEntityManagerInView，避免接口层延迟加载
+    open-in-view: false
+    # Hibernate 额外属性
+    properties:
+      hibernate:
+        # 格式化 SQL 便于排查
+        format_sql: true
+    # 默认不直接打印 SQL
+    show-sql: false
+  # 上传文件大小限制
+  servlet:
+    multipart:
+      # 单文件最大 5MB
+      max-file-size: 5MB
+      # 单请求最大 10MB
+      max-request-size: 10MB
+
+# 访客系统业务配置
+visitor:
+  # 前端 H5 对外访问根地址
+  app-base-url: ${APP_BASE_URL}
+  # 结果页轮询秒数
+  result-poll-seconds: 5
+  # 安全相关配置
+  security:
+    # JWT 签名密钥
+    jwt-secret: ${VISITOR_JWT_SECRET}
+    # 身份证加密 AES 密钥
+    aes-key: ${VISITOR_AES_KEY}
+    # 登录 token 有效时长
+    token-hours: 24
+    # 审批登录态有效分钟数
+    auth-token-minutes: ${VISITOR_AUTH_TOKEN_MINUTES}
+    # 附件短链有效分钟数
+    file-token-minutes: ${VISITOR_FILE_TOKEN_MINUTES}
+  # 独立后台管理端配置，与访客 H5 登录态完全隔离
+  admin:
+    enabled: ${VISITOR_ADMIN_ENABLED:false}
+    public-origin: ${VISITOR_ADMIN_PUBLIC_ORIGIN:http://127.0.0.1:51767}
+    jwt-secret: ${VISITOR_ADMIN_JWT_SECRET}
+    config-encryption-key: ${VISITOR_ADMIN_CONFIG_KEY}
+    access-token-minutes: ${VISITOR_ADMIN_ACCESS_TOKEN_MINUTES}
+    refresh-token-hours: ${VISITOR_ADMIN_REFRESH_TOKEN_HOURS}
+    max-login-failures: ${VISITOR_ADMIN_MAX_LOGIN_FAILURES:5}
+    captcha-after-failures: ${VISITOR_ADMIN_CAPTCHA_AFTER_FAILURES:3}
+    lock-minutes: ${VISITOR_ADMIN_LOCK_MINUTES:30}
+    bootstrap-username: ${VISITOR_ADMIN_BOOTSTRAP_USERNAME}
+    bootstrap-password: ${VISITOR_ADMIN_BOOTSTRAP_PASSWORD}
+    secure-cookie: ${VISITOR_ADMIN_SECURE_COOKIE:true}
+  # 文件存储配置
+  storage:
+    # 存储类型，当前支持 local/minio
+    provider: ${VISITOR_STORAGE_PROVIDER:local}
+    # 存储桶名或逻辑目录名
+    bucket: ${VISITOR_STORAGE_BUCKET:visitor}
+    # 本地存储根目录
+    local-root: ${VISITOR_STORAGE_LOCAL_ROOT:./data/storage}
+    # 附件预览地址前缀
+    preview-base-url: ${VISITOR_STORAGE_PREVIEW_BASE_URL}
+    # MinIO 连接配置
+    minio:
+      # MinIO 服务地址
+      endpoint: ${MINIO_ENDPOINT:http://127.0.0.1:9000}
+      # MinIO Access Key
+      access-key: ${MINIO_ACCESS_KEY}
+      # MinIO Secret Key
+      secret-key: ${MINIO_SECRET_KEY}
+  # 钉钉集成配置
+  dingtalk:
+    # 是否启用钉钉能力
+    enabled: ${DINGTALK_ENABLED:false}
+    # 是否开启本地 mock 模式
+    mock-mode: ${DINGTALK_MOCK_MODE:true}
+    # 钉钉应用 AppKey
+    app-key: ${DINGTALK_APP_KEY}
+    # 钉钉应用 AppSecret
+    app-secret: ${DINGTALK_APP_SECRET}
+    # 钉钉企业 CorpId
+    corp-id: ${DINGTALK_CORP_ID:}
+    # 钉钉 AgentId
+    agent-id: ${DINGTALK_AGENT_ID:}
+    # 钉钉根部门 ID
+    root-dept-id: ${DINGTALK_ROOT_DEPT_ID:1}
+    # mock 登录码前缀
+    mock-auth-code-prefix: ${DINGTALK_MOCK_AUTH_PREFIX:mock-}
+    # 钉钉用户缓存分钟数
+    user-cache-minutes: ${DINGTALK_USER_CACHE_MINUTES:10}
+
+# Actuator 暴露配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 仅开放健康检查和基础信息
+        include: health,info

@@ -1,0 +1,128 @@
+# 测试环境 Spring 配置
+spring:
+  profiles:
+    active: test
+  # H2 内存数据库配置
+  datasource:
+    # H2 连接串
+    url: jdbc:h2:mem:visitor;MODE=MySQL;DB_CLOSE_DELAY=-1
+    # H2 驱动
+    driver-class-name: org.h2.Driver
+    # H2 用户名
+    username: sa
+    # H2 密码留空
+    password:
+  # JPA 测试配置
+  jpa:
+    # Hibernate 测试期间建表后自动销毁
+    hibernate:
+      ddl-auto: create-drop
+    # 测试中关闭 open-in-view
+    open-in-view: false
+  # 测试上传配置
+  servlet:
+    multipart:
+      # 测试单文件大小
+      max-file-size: 5MB
+      # 测试单请求大小
+      max-request-size: 10MB
+
+# 测试环境业务配置
+visitor:
+  # 测试前端地址
+  app-base-url: http://127.0.0.1:5173
+  # 测试安全配置
+  security:
+    # 测试 JWT 密钥
+    jwt-secret: ${VISITOR_TEST_JWT_SECRET}
+    # 测试 AES 密钥
+    aes-key: ${VISITOR_TEST_AES_KEY}
+    # 测试 token 时长
+    token-hours: 24
+    # 测试审批登录态
+    auth-token-minutes: 120
+    # 测试附件短链时长
+    file-token-minutes: 10
+  admin:
+    enabled: true
+    public-origin: http://127.0.0.1:51767
+    jwt-secret: ${VISITOR_TEST_ADMIN_JWT_SECRET}
+    config-encryption-key: ${VISITOR_TEST_ADMIN_CONFIG_KEY}
+    bootstrap-username: admin
+    bootstrap-password: ${VISITOR_TEST_BOOTSTRAP_PASSWORD}
+    secure-cookie: false
+  # 测试存储配置
+  storage:
+    # 测试使用 local 存储
+    provider: local
+    # 测试逻辑桶名
+    bucket: visitor
+    # 测试存储目录
+    local-root: ./target/test-storage
+    # 测试预览地址
+    preview-base-url: http://127.0.0.1:8080/api/visitor/files
+  # 测试钉钉配置
+  dingtalk:
+    # 测试开启 mock
+    mock-mode: true
+    # 测试 mock 前缀
+    mock-auth-code-prefix: mock-
+  # 测试海康配置
+  hikvision:
+    # 测试默认关闭海康
+    enabled: false
+    # 测试海康地址
+    base-url: ${HIKVISION_TEST_BASE_URL}
+    # 测试海康 AppKey
+    app-key: ${HIKVISION_TEST_APP_KEY}
+    # 测试海康 AppSecret
+    app-secret: ${HIKVISION_TEST_APP_SECRET}
+    # 测试 tagId
+    tag-id: frs
+    # 测试组织编码
+    org-index-code: test-org
+    # 测试人脸分组编码
+    face-group-index-code: test-face-group
+    # 测试添加人员接口
+    add-person-path: /artemis/api/pmas/v1/person/single/add
+    # 测试查询人员详情接口
+    query-person-path: /artemis/api/pmas/v1/person/detailV1
+    # 测试启用人员接口
+    enable-person-path: /artemis/api/resource/v1/person/single/update
+    # 测试删除人员接口
+    disable-person-path: /artemis/api/pmas/v1/person/batch/delete
+    # 测试添加人脸接口
+    add-face-path: /artemis/api/pmas/v1/personFace
+    # 测试删除人脸接口
+    delete-face-path: /artemis/api/frs/v1/face/deletion
+    # 测试连接超时
+    connect-timeout-seconds: 5
+    # 测试读取超时
+    read-timeout-seconds: 10
+    # 测试信任证书
+    trust-all: true
+    access:
+      # 测试默认关闭门禁权限
+      enabled: false
+      # 测试权限下发接口
+      grant-path: /artemis/api/acps/v1/auth_config/add
+      # 测试权限回收接口
+      revoke-path: /artemis/api/acps/v1/auth_config/delete
+      # 测试权限资源类型
+      resource-type: acsDevice
+      # 测试手工设备列表
+      resource-index-codes: []
+      # 测试开启自动发现设备
+      auto-discover-resources: true
+      # 测试设备查询接口
+      resource-query-path: /artemis/api/irds/v2/deviceResource/resources
+      # 测试设备查询类型
+      resource-query-type: door
+      # 测试设备查询分页大小
+      resource-query-page-size: 100
+      # 测试启动时不预热设备，避免影响单元测试
+      refresh-resources-on-startup: false
+      # 测试设备刷新 cron
+      resource-refresh-cron: 0 0 3 * * MON
+      # 测试设备通道号
+      channel-nos: [1]

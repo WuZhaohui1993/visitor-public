@@ -1,0 +1,6 @@
+# Optional vendor adapter configuration. Keep real credentials outside Git.
+hikvision:
+  enabled: ${HIKVISION_ENABLED:false}
+  base-url: ${HIKVISION_BASE_URL}
+  app-key: ${HIKVISION_APP_KEY}
+  app-secret: ${HIKVISION_APP_SECRET}

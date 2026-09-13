@@ -1,0 +1,9 @@
+.DS_Store
+.codex-tmp/
+release/
+data/
+visitor-h5/node_modules/
+visitor-h5/dist/
+visitor-server/target/
+visitor-server/.mvn/wrapper/maven-wrapper.jar
+*.log
